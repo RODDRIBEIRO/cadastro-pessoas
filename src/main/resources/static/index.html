@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Cadastro de Pessoa</title>
+</head>
+<body>
+<h1>Cadastro de Pessoa</h1>
+<form id="cadastroForm">
+    <label>Nome: <input name="nome" required/></label><br/>
+    <label>Sexo:
+        <select name="sexo" required>
+            <option value="">Selecione</option>
+            <option value="FEMININO">Feminino</option>
+            <option value="MASCULINO">Masculino</option>
+        </select>
+    </label><br/>
+    <label>E-mail: <input name="email" type="email"/></label><br/>
+    <label>Data de nascimento: <input name="dataNascimento" type="date" required/></label><br/>
+    <label>Naturalidade: <input name="naturalidade"/></label><br/>
+    <label>Nacionalidade: <input name="nacionalidade"/></label><br/>
+    <label>CPF: <input name="cpf" id="cpf" required maxlength="14"/></label><br/>
+    <button type="submit">Cadastrar</button>
+</form>
+
+<div id="resultado"></div>
+
+<script>
+    const cpfInput = document.getElementById('cpf');
+
+    cpfInput.addEventListener('input', function (e) {
+      let value = e.target.value.replace(/\D/g, '');
+
+      if (value.length > 11) value = value.slice(0, 11);
+
+      if (value.length <= 3) {
+        value = value;
+      } else if (value.length <= 6) {
+        value = value.replace(/(\d{3})(\d+)/, '$1.$2');
+      } else if (value.length <= 9) {
+        value = value.replace(/(\d{3})(\d{3})(\d+)/, '$1.$2.$3');
+      } else {
+        value = value.replace(/(\d{3})(\d{3})(\d{3})(\d+)/, '$1.$2.$3-$4');
+      }
+
+      e.target.value = value;
+    });
+
+    document.getElementById('cadastroForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const form = e.target;
+      const cpf = form.cpf.value.replace(/\D/g, '');
+
+      if (cpf.length !== 11) {
+        alert('Digite um CPF válido com 11 números.');
+        return;
+      }
+
+      const data = {
+        nome: form.nome.value,
+        sexo: form.sexo.value,
+        email: form.email.value,
+        dataNascimento: form.dataNascimento.value,
+        naturalidade: form.naturalidade.value,
+        nacionalidade: form.nacionalidade.value,
+        cpf: cpf
+      };
+
+      const auth = sessionStorage.getItem('auth');
+      const res = await fetch('/api/v1/pessoas', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        credentials: 'include',
+        body: JSON.stringify(data)
+       });
+
+
+    const result = await res.json();
+
+    const msgDiv = document.getElementById('resultado');
+    if (res.ok) {
+      msgDiv.innerText = "Cadastro realizado com sucesso!";
+      form.reset(); //
+    } else {
+      msgDiv.innerText = "Erro: " + JSON.stringify(result);
+    }
+    });
+</script>
+</body>
+</html>
