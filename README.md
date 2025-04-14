@@ -67,6 +67,9 @@ OpenAPI JSON:
 http://localhost:8080/v3/api-docs
 ```
 
+🧪 Testes
+O projeto possui testes unitários
+
 ---
 
 ## 🔁 API - Versões
