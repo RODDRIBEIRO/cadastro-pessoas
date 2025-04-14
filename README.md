@@ -12,10 +12,8 @@ Aplicação Java completa com API REST para cadastro, consulta, atualização e 
 - Spring Security
 - Spring Validation
 - Lombok
-- Jackson (com suporte ao `LocalDate`)
 - H2 Database
 - Swagger (Springdoc OpenAPI 3)
-- Maven Wrapper
 - Docker
 
 ---
